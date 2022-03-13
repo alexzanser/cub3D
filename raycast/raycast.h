@@ -18,13 +18,12 @@ typedef struct s_raycast {
 	t_vector 		*plane;
 	t_vector		*ray;
 	t_vector		*ray_dir;
-	int				camera_x;
+	float			camera_x;
 	int 			pos_x;
 	int 			pos_y;
 	long long int	time;
 	long long int	prev_time;
 } t_raycast;
-
 
 t_raycast  *init_raycast(void);
 t_vector *init_vector(void);

@@ -1,7 +1,7 @@
 #include "raycast.h"
 
-
-int init_pos_and_dir(t_raycast *cast_data) {
+int init_pos_and_dir(t_raycast *cast_data)
+{
 
 	cast_data->pos_x = 22;
 	cast_data->pos_y = 12;
@@ -11,9 +11,12 @@ int init_pos_and_dir(t_raycast *cast_data) {
 	cast_data->ray_dir->y = 0.0;
 	cast_data->plane->x = 0.0;
 	cast_data->plane->y = 0.66;
+
+	return (0);
 }
 
-t_vector *init_vector(void) {
+t_vector *init_vector(void)
+{
 	t_vector *vector;
 
 	vector = (t_vector *) malloc(sizeof (t_vector));
@@ -25,13 +28,14 @@ t_vector *init_vector(void) {
 	return (vector);
 }
 
-t_raycast  *init_raycast(void) {
+t_raycast  *init_raycast(void)
+{
 	t_raycast *cast_data;
 
 	cast_data = (t_raycast *) malloc(sizeof (t_raycast));
 	if (NULL == cast_data)
 		return NULL;
-	cast_data->camera_x = 0;
+	cast_data->camera_x = 0.0;
 	cast_data->time = 0;
 	cast_data->prev_time = 0;
 	cast_data->dir = init_vector();
