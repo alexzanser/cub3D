@@ -61,6 +61,9 @@ t_raycast  *init_raycast(void)
 	cast_data->dir = init_vector();
 	cast_data->pos = init_vector();
 	cast_data->plane = init_vector();
+	cast_data->color = 0x0000FF00;
+	cast_data->image = NULL;
+	cast_data->buffer = NULL;
 	if (NULL == cast_data->dir || NULL == cast_data->pos ||
 			NULL == cast_data->plane)
 		return NULL;

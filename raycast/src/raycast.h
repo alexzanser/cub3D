@@ -6,6 +6,7 @@
 #include <math.h>
 #include "../mlx/mlx.h"
 
+
 #define MAP_WIDTH 24
 #define MAP_HEIGHT 24
 #define SCREEN_WIDTH 640
@@ -15,6 +16,11 @@ typedef struct s_vector {
 	float x;
 	float y;
 } t_vector ;
+
+typedef struct	 s_mlx {
+	void			*mlx_ptr;
+	void			*win_ptr;
+}t_mlx;
 
 typedef struct   s_ray {
 	t_vector		*ray_dir;
@@ -43,6 +49,9 @@ typedef struct s_raycast {
 	int 			pos_y;
 	long long int	time;
 	long long int	prev_time;
+	int 			color;
+	void			*image;
+	char 			*buffer;
 } t_raycast;
 
 t_raycast  *init_raycast(void);
@@ -50,6 +59,6 @@ t_vector *init_vector(void);
 t_ray  *init_ray(void);
 
 int init_pos_and_dir(t_raycast *cast_data);
-int casting_rays(t_raycast *cast_data, t_ray *ray);
+int casting_rays(t_raycast *cast_data, t_ray *ray, t_mlx *mlx);
 
 #endif

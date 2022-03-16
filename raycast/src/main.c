@@ -62,7 +62,7 @@ void calc_side_dist(t_ray *ray, t_raycast  *cast_data)
 	}
 }
 
-void perform_dda(t_ray *ray, t_raycast  *cast_data)
+void perform_dda(t_ray *ray)
 {
 	while (ray->hit == 0) {
 		if (ray->side_dist_x < ray->side_dist_y) {
@@ -102,7 +102,32 @@ void calc_draw_limits(t_ray *ray) {
 		ray->draw_end = SCREEN_HEIGHT - 1;
 }
 
-int casting_rays(t_raycast *cast_data, t_ray *ray)
+void set_color(t_ray *ray, t_raycast  *cast_data)
+{
+	if (worldMap[ray->map_x][ray->map_y] == 1)
+		cast_data->color = 0x00FF0000;
+	else if (worldMap[ray->map_x][ray->map_y] == 2)
+		cast_data->color = 0x0000FF00;
+	else if (worldMap[ray->map_x][ray->map_y] == 3)
+		cast_data->color = 0x000000FF;
+	else if (worldMap[ray->map_x][ray->map_y] == 4)
+		cast_data->color = 0x00FFFFFF;
+	else
+		cast_data->color = 0x00FFFF00;
+}
+
+void draw_line(int x, t_ray *ray, t_mlx *mlx, t_raycast *cast_data) {
+	int	y;
+	mlx_pixel_put(mlx->mlx_ptr,mlx->win_ptr, 10, 10, 0x00FF0000);
+	y = ray->draw_start;
+	while (y < ray->draw_end)
+	{
+		cast_data->buffer[y * SCREEN_WIDTH + x] = cast_data->color;
+		y++;
+	}
+}
+
+int casting_rays(t_raycast *cast_data, t_ray *ray, t_mlx *mlx)
 {
 	int x;
 
@@ -120,9 +145,12 @@ int casting_rays(t_raycast *cast_data, t_ray *ray)
 		ray->delta_dist_x = calc_delta_dist(ray->ray_dir->y);
 		calc_side_dist(ray, cast_data);
 
-		perform_dda(ray, cast_data);
+		perform_dda(ray);
 		calc_perp_wall_dist(ray);
 		calc_draw_limits(ray);
+		set_color(ray, cast_data);
+		draw_line(x, ray, mlx, cast_data);
+		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, cast_data->image, 0, 0);
 	}
 
 	return (0);
@@ -130,8 +158,7 @@ int casting_rays(t_raycast *cast_data, t_ray *ray)
 
 int main(void)
 {
-	void			*mlx_ptr;
-	void			*win_ptr;
+	t_mlx 		*mlx;
 	t_raycast	*cast_data;
 	t_ray 		*ray;
 	int		done;
@@ -143,12 +170,17 @@ int main(void)
 	ray = init_ray();
 
 	done = 1;
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, SCREEN_WIDTH, SCREEN_HEIGHT , "SO_LONG");
-	while (done) {
-		casting_rays(cast_data, ray);
-	}
-	mlx_loop(mlx_ptr);
+	cast_data->image = mlx_new_image(mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
+	int pixel_bits;
+	int line_bytes;
+	int endian;
+	cast_data->buffer = mlx_get_data_addr(cast_data->image, &pixel_bits, &line_bytes, &endian);
+
+	mlx->mlx_ptr = mlx_init();
+	mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, SCREEN_WIDTH, SCREEN_HEIGHT , "SO_LONG");
+	casting_rays(cast_data, ray, mlx);
+
+	mlx_loop(mlx->mlx_ptr);
 	printf("posX :%f,  posY :%f\n", ray->ray_dir->x, ray->ray_dir->y);
     return 0;
 }
