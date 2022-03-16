@@ -118,11 +118,10 @@ void set_color(t_ray *ray, t_raycast  *cast_data)
 
 void draw_line(int x, t_ray *ray, t_mlx *mlx, t_raycast *cast_data) {
 	int	y;
-	mlx_pixel_put(mlx->mlx_ptr,mlx->win_ptr, 10, 10, 0x00FF0000);
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
-		cast_data->buffer[y * SCREEN_WIDTH + x] = cast_data->color;
+		cast_data->buffer[y * SCREEN_WIDTH + x * 4] = 0x00FF0000;
 		y++;
 	}
 }
